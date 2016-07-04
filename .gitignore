@@ -1,29 +1,64 @@
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+#include<LCD5110_Basic.h>
+LCD5110 myGLCD(8,9,10,11,12);
+extern uint8_t SmallFont[];
+extern uint8_t sicaklik_bitmap[];
+extern uint8_t MediumNumbers[];
+extern uint8_t BigNumbers[];
 
-# Precompiled Headers
-*.gch
-*.pch
+#include <DHT.h>
+#define DHTPIN 6     // what pin we're connected DHT11
+#define DHTTYPE DHT22   // DHT 11
+DHT dht(DHTPIN, DHTTYPE);
+int b=7;
+float eggmaxt = 37.7;
+float eggmint = 37.3;
+int role = 2;
+void setup() {
+myGLCD.InitLCD();
+myGLCD.setContrast(70);
+pinMode(role, OUTPUT);
+pinMode(b,OUTPUT);
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+}
 
-# Fortran module files
-*.mod
-*.smod
+void loop() {
+  
+float h = dht.readHumidity();
+float t = dht.readTemperature();
+      myGLCD.clrScr();
+      myGLCD.setFont(SmallFont);
+      myGLCD.print("SICAKLIK",0,0);
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+      myGLCD.setFont(BigNumbers);
+      myGLCD.printNumF(t,1,12 ,18);
+      myGLCD.setFont(SmallFont);
+      myGLCD.print("C",72,27);
+      myGLCD.print("o",70,22);
+      delay(2500);
+       myGLCD.clrScr();
+      myGLCD.setFont(SmallFont);
+      myGLCD.print(" NEM ",0,0);
+      myGLCD.setFont(BigNumbers);
+      myGLCD.printNumF(h,1,20,20);
+      myGLCD.setFont(SmallFont);
+      myGLCD.print("%",9,28);
+     
+      delay(2500);
 
-# Executables
-*.exe
-*.out
-*.app
+if ( t < eggmint )
+{
+digitalWrite (role,HIGH);
+}
+else if(t > eggmaxt)
+{
+digitalWrite (role,LOW);
+}
+
+
+
+  
+
+
+
+
+} 
